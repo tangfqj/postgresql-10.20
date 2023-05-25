@@ -1,10 +1,13 @@
-# Postgresql-10.20 with Extended Functions
+# PostgreSQL-10.20 with Extended Functions
 
 ![build status](https://img.shields.io/badge/build-passing-66c2a5.svg)
 [![psql version](https://img.shields.io/badge/PostgreSQL-10.2-fc8d62.svg)](https://www.postgresql.org/)
 [![Apache License](https://img.shields.io/badge/license-Apache2.0-8da0cb.svg)](http://www.apache.org/licenses/)
 
-## Description
+## Motivation & Description
+For example, say we have two relations A and B and we want to joint them on the address field. We have address in A like ```123 Durant Avenue Berkeley, CA``` and address in B like ```123 Durant Ave. Berkeley, CA```. In the original postgres implementation, the two addresses will not match in join oepration. However, if the records could be join if the addresses were "similar" enough, that would be useful.
+
+Similarity joins use similarity calculations to determin whether records should be matched. I mainly implement two similarity metrics: the Levenshtein distance and the Jaccard index.
 
 ## Mannual
 
