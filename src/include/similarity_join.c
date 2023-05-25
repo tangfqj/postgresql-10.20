@@ -43,13 +43,13 @@ levenshtein_distance(PG_FUNCTION_ARGS)
 	for(i = 1; i <= t_bytes; i++)
 		distance[i][0] = i;
 
-	/* Achieve O(m * n) complexity */
+	/* O(m * n) complexity */
 	for(i = 1; i <= t_bytes; i++)
 		for(j = 1; j <= s_bytes; j++)
 			if(tolower(s_data[j - 1]) == tolower(t_data[i - 1]))
 				distance[i][j] = distance[i - 1][j - 1];
 			else
-			{
+			{   /* Compute min(d[i-1, j], d[i, j-1], d[i-1, j-1]) */
 				if(distance[i - 1][j] <= distance[i][j - 1])
 					min_dist = distance[i - 1][j];
 				else
@@ -89,11 +89,11 @@ jaccard_index(PG_FUNCTION_ARGS)
 
 	/* Length of src and dst */
 	s_bytes = VARSIZE_ANY_EXHDR(src);
-	t_bytes = VARSIZE_ANY_EXHDR(dst);	
+	t_bytes = VARSIZE_ANY_EXHDR(dst);
 
-	//O(m + n)
+	/* O(m + n) Complexity */
 	for(i = -1; i < s_bytes; i++)
-	{	
+	{
 		a = (i < 0) ? '$' : s_data[i];
 		b = (i + 1 < s_bytes) ? s_data[i + 1] : '$';
 		if(!hash[a][b])
@@ -102,12 +102,12 @@ jaccard_index(PG_FUNCTION_ARGS)
 			hash[a][b] = 1;
 			clear[0][cp] = a;
 			clear[1][cp++] = b;
-		}	
+		}
 	}
 
-	//hash dst
+	/* hash dst */
 	for(i = -1; i < t_bytes; i++)
-	{	
+	{
 		a = (i < 0) ? '$' : t_data[i];
 		b = (i + 1 < t_bytes) ? t_data[i + 1] : '$';
 		switch(hash[a][b])
@@ -118,7 +118,7 @@ jaccard_index(PG_FUNCTION_ARGS)
 		}
 	}
 
-	//clear hash[][]
+	/* clear hash[][] */
 	for(i = 0; i < cp; i++)
 		hash[clear[0][i]][clear[1][i]] = 0;
 
